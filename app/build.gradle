@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
@@ -14,7 +16,7 @@ android {
             enabled true
         }
         ndk {
-            abiFilters "armeabi-v7a","arm64-v8a"
+            abiFilters "armeabi-v7a", "arm64-v8a"
         }
     }
     buildTypes {
@@ -34,4 +36,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation 'com.github.microshow:RxFFmpeg:2.1.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
