@@ -3,59 +3,33 @@ package com.wzl.reversalchallenge;
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.View
+import android.util.Log
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
-import com.wzl.reversalchallenge.databinding.ActivityMainBinding
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 
-public class MainActivity : AppCompatActivity(), View.OnClickListener {
+public class MainActivity : AppCompatActivity() {
 
-    private var binding: ActivityMainBinding? = null
     private var mediaUtil: MediaUtil? = null
     private val permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
     private val REQUEST_RECORD_AUDIO_PERMISSION  = 1
+    private var adapter: MyFragmentPagerAdapter? = null
+    private var mList: MutableList<Fragment>? = null
+    private var viewPager: ViewPager? = null
+    private var radioGroup: RadioGroup? = null
 
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
+
+        initView()
 
         checkPermissions()
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        mediaUtil = MediaUtil(this)
-        initView()
-    }
-
-    public override fun onClick(v: View) {
-
-        when (v.id) {
-            R.id.start_record -> {
-                Toast.makeText(this, "点击 start_record", Toast.LENGTH_SHORT).show()
-                    mediaUtil!!.startRecord()
-            }
-            R.id.stop_record -> {
-                Toast.makeText(this, "点击 stop_record", Toast.LENGTH_SHORT).show()
-                    mediaUtil!!.stopRecord()
-            }
-            R.id.start_play -> {
-                Toast.makeText(this, "点击 start_play", Toast.LENGTH_SHORT).show()
-                    mediaUtil!!.startPlay()
-            }
-            R.id.stop_play -> {
-                Toast.makeText(this, "点击 stop_play", Toast.LENGTH_SHORT).show()
-                    mediaUtil!!.stopPlay()
-            }
-        }
-    }
-
-    private fun initView() {
-        binding!!.startRecord.setOnClickListener(this)
-        binding!!.stopRecord.setOnClickListener(this)
-        binding!!.startPlay.setOnClickListener(this)
-        binding!!.stopPlay.setOnClickListener(this)
     }
 
     protected override fun onStop() {
@@ -77,6 +51,51 @@ public class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, permissions[0]) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        }
+    }
+
+    fun initView() {
+
+        mediaUtil = MediaUtil(this)
+
+        viewPager = findViewById(R.id.viewPager)
+        radioGroup = findViewById(R.id.radioGroup)
+
+        mList = mutableListOf(RecordFragment.newInstance(), RepeatFragment.newInstance())
+        adapter = MyFragmentPagerAdapter(supportFragmentManager, mList!!)
+        viewPager!!.adapter = adapter
+        viewPager!!.addOnPageChangeListener(mPageChangeListener)
+        radioGroup!!.setOnCheckedChangeListener(mCheckedChangeListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewPager!!.removeOnPageChangeListener(mPageChangeListener)
+    }
+
+    private val mPageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener {
+
+        override fun onPageScrollStateChanged(state: Int) {
+        }
+
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        }
+
+        override fun onPageSelected(position: Int) {
+            val radioButton: RadioButton = radioGroup!!.getChildAt(position) as RadioButton
+            radioButton.isChecked = true
+        }
+    }
+
+    private val mCheckedChangeListener: RadioGroup.OnCheckedChangeListener = object : RadioGroup.OnCheckedChangeListener {
+
+        override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
+            for (i in 0 until group!!.childCount) {
+                if (group.getChildAt(i).id == checkedId) {
+                    viewPager!!.currentItem = i
+                    return
+                }
+            }
         }
     }
 }

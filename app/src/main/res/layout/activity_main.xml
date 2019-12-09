@@ -1,61 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-    <data>
-        <variable
-            name="clickListener"
-            type="android.view.View.OnClickListener" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/stop_play"
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RadioButton
+            android:id="@+id/record_radio_button"
+            style="@style/RadioButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="停止播放"
-            app:layout_constraintBottom_toBottomOf="@+id/start_play"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/start_play"
-            app:layout_constraintTop_toTopOf="@+id/start_play" />
+            android:checked="true"
+            android:drawableTop="@drawable/bottom_nav_record_icon"
+            android:text="录制"
+            android:textColor="@drawable/bottom_nav_text" />
 
-        <Button
-            android:id="@+id/start_record"
+        <RadioButton
+            android:id="@+id/repeat_radio_button"
+            style="@style/RadioButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="开始录音"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/stop_record"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:drawableTop="@drawable/bottom_nav_repeat_icon"
+            android:text="模仿"
+            android:textColor="@drawable/bottom_nav_text" />
 
-        <Button
-            android:id="@+id/start_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="开始播放"
-            app:layout_constraintBottom_toBottomOf="@+id/stop_record"
-            app:layout_constraintEnd_toStartOf="@+id/stop_play"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/stop_record"
-            app:layout_constraintTop_toTopOf="@+id/stop_record" />
+    </RadioGroup>
 
-        <Button
-            android:id="@+id/stop_record"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="停止录音"
-            app:layout_constraintBottom_toBottomOf="@+id/start_record"
-            app:layout_constraintEnd_toStartOf="@+id/start_play"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/start_record"
-            app:layout_constraintTop_toTopOf="@+id/start_record" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

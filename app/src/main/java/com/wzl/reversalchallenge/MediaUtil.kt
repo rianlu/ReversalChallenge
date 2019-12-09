@@ -59,6 +59,10 @@ public class MediaUtil(mContext: Context) {
         reverseAudio(fileName, newFileName)
     }
 
+    fun isPlaying() {
+        recorder
+    }
+
     // 开始播放音频
     fun startPlay() {
 
