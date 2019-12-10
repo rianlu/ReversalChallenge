@@ -1,4 +1,4 @@
-package com.wzl.reversalchallenge
+package com.wzl.reversalchallenge.utils
 
 import android.content.Context
 import android.media.MediaPlayer
@@ -18,10 +18,10 @@ public class MediaUtil(mContext: Context) {
     private var recorder: MediaRecorder? = null
     private var player: MediaPlayer? = null
     private val path: String = mContext.externalCacheDir?.absolutePath + "/"
-    private var fileName: String? = null
-    private var newFileName: String? = null
+    private lateinit var fileName: String
+    private lateinit var newFileName: String
     private lateinit var currentDate: Date
-    private var dateFormat: SimpleDateFormat? = null
+    private lateinit var dateFormat: SimpleDateFormat
 
     // 开始录音
     fun startRecord() {
@@ -29,7 +29,7 @@ public class MediaUtil(mContext: Context) {
         // 以时间作为录音文件名
         dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA)
         currentDate = Calendar.getInstance().time
-        fileName = dateFormat!!.format(currentDate) + ".mp3"
+        fileName = dateFormat.format(currentDate) + ".mp3"
         recorder = MediaRecorder()
         // 设置音频源为麦克风
         recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -55,7 +55,7 @@ public class MediaUtil(mContext: Context) {
         recorder = null
         // 生成倒放音频文件
         // 为了区分源文件，添加_reverse后缀
-        newFileName = dateFormat!!.format(currentDate) + "_reverse.mp3"
+        newFileName = dateFormat.format(currentDate) + "_reverse.mp3"
         reverseAudio(fileName, newFileName)
     }
 
@@ -68,9 +68,37 @@ public class MediaUtil(mContext: Context) {
 
         player = MediaPlayer()
         try {
-            player!!.setDataSource(path + newFileName)
-            player!!.prepare()
-            player!!.start()
+            if (!player!!.isPlaying) {
+                player!!.setDataSource(path + newFileName)
+                player!!.prepare()
+                player!!.start()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun playOriginVoice() {
+        player = MediaPlayer()
+        try {
+            if (!player!!.isPlaying) {
+                player!!.setDataSource(path + fileName)
+                player!!.prepare()
+                player!!.start()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun playReverseVoice() {
+        player = MediaPlayer()
+        try {
+            if (!player!!.isPlaying) {
+                player!!.setDataSource(path + newFileName)
+                player!!.prepare()
+                player!!.start()
+            }
         } catch (e: IOException) {
             e.printStackTrace()
         }

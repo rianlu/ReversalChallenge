@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:drawableTop="@drawable/bottom_nav_record_icon"
-            android:text="录制"
+            android:text="玩家1"
             android:textColor="@drawable/bottom_nav_text" />
 
         <RadioButton
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/bottom_nav_repeat_icon"
-            android:text="模仿"
+            android:text="玩家2"
             android:textColor="@drawable/bottom_nav_text" />
 
     </RadioGroup>

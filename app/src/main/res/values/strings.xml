@@ -1,6 +1,18 @@
 <resources>
-    <string name="app_name">Reversal Challenge</string>
+    <string name="app_name">倒放挑战</string>
+    <string name="app_about">关于</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_donate">捐赠</string>
+    <string name="dialog_message" translatable="false">最近看了很多的倒放挑战，萌生了这个想法，祝你使用愉快。</string>
+    <string name="image_hint_play_origin_voice">开始播放原音</string>
+    <string name="image_hint_play_voice">开始播放</string>
+    <string name="image_hint_start_record">开始录音</string>
+    <string name="image_hint_stop_record">停止录音</string>
+    <string name="image_hint_back">返回</string>
+    <string name="text_hint_message" translatable="false">听说有人要捐赠？点我！</string>
+    <string name="text_hint_message_error" translatable="false">计数出现异常了，算了，下次吧</string>
+    <string name="text_hint_message_clicked" translatable="false">点到10即可开启捐赠</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

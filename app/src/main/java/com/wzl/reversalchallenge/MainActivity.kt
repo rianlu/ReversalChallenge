@@ -1,9 +1,13 @@
 package com.wzl.reversalchallenge;
 
 import android.Manifest
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
@@ -12,6 +16,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.wzl.reversalchallenge.utils.CacheUtil
+import com.wzl.reversalchallenge.utils.MediaUtil
 
 public class MainActivity : AppCompatActivity() {
 
@@ -22,6 +28,7 @@ public class MainActivity : AppCompatActivity() {
     private var mList: MutableList<Fragment>? = null
     private var viewPager: ViewPager? = null
     private var radioGroup: RadioGroup? = null
+
 
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,5 +104,48 @@ public class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            R.id.clear_cache -> {
+                val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
+                dialog.setTitle(R.string.app_about)
+                dialog.setMessage("共有${CacheUtil.getExternalCacheSize(this)}缓存，是否清理？")
+                dialog.setNegativeButton(R.string.dialog_cancel, null)
+                dialog.setPositiveButton(R.string.dialog_ok, object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        CacheUtil.clearExternalCache(this@MainActivity)
+                    }
+                })
+                dialog.create().show()
+            }
+            R.id.app_about -> {
+                val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
+                dialog.setNeutralButton(R.string.dialog_donate, object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        Toast.makeText(this@MainActivity, "请看首页提示", Toast.LENGTH_SHORT).show()
+                        showHint()
+                    }
+
+                })
+                dialog.setTitle(R.string.app_about)
+                dialog.setMessage(R.string.dialog_message)
+                dialog.setPositiveButton(R.string.dialog_ok, null)
+                dialog.create().show()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showHint() {
+        RecordFragment.Companion.HintAsyncTask().execute()
     }
 }
