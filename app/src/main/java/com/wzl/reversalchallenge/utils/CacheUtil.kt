@@ -8,6 +8,7 @@ public class CacheUtil {
 
     companion object {
 
+        // 获取外部缓存大小
         public fun getExternalCacheSize(context: Context?): String {
 
             return if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
@@ -17,6 +18,17 @@ public class CacheUtil {
             }
         }
 
+        // 获取全部缓存大小
+        public fun getCacheSize(context: Context?): String {
+
+            var totalSize: Long = getFolderSize(context!!.cacheDir)
+            if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
+                totalSize += getFolderSize(context.externalCacheDir)
+            }
+            return formatSize(totalSize)
+        }
+
+        // 获取文件夹大小
         private fun getFolderSize(folder: File?): Long {
 
             var size: Long = 0
@@ -31,12 +43,22 @@ public class CacheUtil {
             return size
         }
 
+        // 清除外部缓存
         public fun clearExternalCache(context: Context?) {
             if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
                 deleteFolder(context!!.externalCacheDir)
             }
         }
 
+        // 清除全部缓存
+        public fun clearAllCache(context: Context?) {
+            deleteFolder(context!!.cacheDir)
+            if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
+                deleteFolder(context.externalCacheDir)
+            }
+        }
+
+        // 删除文件夹
         private fun deleteFolder(folder: File?) : Boolean {
 
             if (folder != null && folder.isDirectory) {
