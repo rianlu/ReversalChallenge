@@ -2,7 +2,6 @@ package com.wzl.reversalchallenge
 
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,14 +11,18 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.wzl.reversalchallenge.databinding.FragmentRecordBinding
-import com.wzl.reversalchallenge.utils.MediaUtil
+import com.wzl.reversalchallenge.utils.AudioRecordUtil
+import com.wzl.reversalchallenge.utils.IRecorder
+import com.wzl.reversalchallenge.utils.MediaPlayerUtil
+import com.wzl.reversalchallenge.utils.MediaRecorderUtil
 
 /**
  * A simple [Fragment] subclass.
  */
 class RecordFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var mediaUtil: MediaUtil
+    public lateinit var recorder: IRecorder
+    public lateinit var mediaPlayer: MediaPlayerUtil
     private var isRecording: Boolean = false
     private var clickCount: Int = 0
     private var smallNum: Int = 0
@@ -62,7 +65,8 @@ class RecordFragment : Fragment(), View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mediaUtil = MediaUtil(requireActivity())
+        recorder = AudioRecordUtil(requireActivity())
+        mediaPlayer = MediaPlayerUtil()
         initView()
     }
 
@@ -72,33 +76,31 @@ class RecordFragment : Fragment(), View.OnClickListener {
             R.id.start_stop_record -> {
                 if (!isRecording) {
                     Toast.makeText(requireActivity(), R.string.image_hint_start_record, Toast.LENGTH_SHORT).show()
-                    mediaUtil.startRecord()
+                    recorder.startRecord()
                     isRecording = true
                     binding.commonView.startStopRecord.background = resources.getDrawable(R.drawable.stop_record_icon, null)
                 } else {
                     Toast.makeText(requireActivity(), R.string.image_hint_stop_record, Toast.LENGTH_SHORT).show()
-                    mediaUtil.stopRecord()
+                    recorder.stopRecord()
                     isRecording = false
                     binding.commonView.startStopRecord.background = resources.getDrawable(R.drawable.start_record_icon, null)
-                    binding.commonView.startStopRecord.visibility = View.GONE
-                    binding.commonView.playOriginVoice.visibility = View.VISIBLE
-                    binding.commonView.playReverseVoice.visibility = View.VISIBLE
-                    binding.commonView.backToRecord.visibility = View.VISIBLE
+                    showOrHideUI()
                 }
             }
             R.id.play_origin_voice -> {
-                Toast.makeText(requireActivity(), R.string.image_hint_play_origin_voice, Toast.LENGTH_SHORT).show()
-                mediaUtil.playOriginVoice()
+                if (!mediaPlayer.checkPlaying()) {
+                    Toast.makeText(requireActivity(), R.string.image_hint_play_origin_voice, Toast.LENGTH_SHORT).show()
+                    mediaPlayer.playOrigin(recorder.getOriginPath())
+                }
             }
             R.id.play_reverse_voice -> {
-                Toast.makeText(requireActivity(), R.string.image_hint_play_voice, Toast.LENGTH_SHORT).show()
-                mediaUtil.playReverseVoice()
+                if (!mediaPlayer.checkPlaying()) {
+                    Toast.makeText(requireActivity(), R.string.image_hint_play_voice, Toast.LENGTH_SHORT).show()
+                    mediaPlayer.playReverse(recorder.getReversePath())
+                }
             }
             R.id.back_to_record -> {
-                binding.commonView.startStopRecord.visibility = View.VISIBLE
-                binding.commonView.playOriginVoice.visibility = View.GONE
-                binding.commonView.playReverseVoice.visibility = View.GONE
-                binding.commonView.backToRecord.visibility = View.GONE
+                showOrHideUI()
             }
             R.id.text_hint_message -> {
                 binding.commonView.textHintMessage.text = resources.getString(R.string.text_hint_message_clicked)
@@ -146,5 +148,28 @@ class RecordFragment : Fragment(), View.OnClickListener {
         binding.commonView.textHintMessage.setOnClickListener(this)
         binding.commonView.textHintNum.setOnClickListener(this)
         binding.commonView.imageView.setOnClickListener(this)
+    }
+
+    private fun showOrHideUI() {
+        if (binding.commonView.startStopRecord.visibility == View.VISIBLE) {
+            binding.commonView.startStopRecord.visibility = View.GONE
+        } else {
+            binding.commonView.startStopRecord.visibility = View.VISIBLE
+        }
+        if (binding.commonView.playOriginVoice.visibility == View.VISIBLE) {
+            binding.commonView.playOriginVoice.visibility = View.GONE
+        } else {
+            binding.commonView.playOriginVoice.visibility = View.VISIBLE
+        }
+        if (binding.commonView.playReverseVoice.visibility == View.VISIBLE) {
+            binding.commonView.playReverseVoice.visibility = View.GONE
+        } else {
+            binding.commonView.playReverseVoice.visibility = View.VISIBLE
+        }
+        if (binding.commonView.backToRecord.visibility == View.VISIBLE) {
+            binding.commonView.backToRecord.visibility = View.GONE
+        } else {
+            binding.commonView.backToRecord.visibility = View.VISIBLE
+        }
     }
 }

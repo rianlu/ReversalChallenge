@@ -1,150 +1,37 @@
 package com.wzl.reversalchallenge.utils
 
-import android.content.Context
-import android.media.MediaPlayer
-import android.media.MediaRecorder
-
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-
 import io.microshow.rxffmpeg.RxFFmpegInvoke
 import io.microshow.rxffmpeg.RxFFmpegSubscriber
 
-public class MediaUtil(mContext: Context) {
+/**
+ * Created by 24694
+ * on 2020/2/8 16:03
+ */
+class MediaUtil {
 
-    private var recorder: MediaRecorder? = null
-    private var player: MediaPlayer? = null
-    private val path: String = mContext.externalCacheDir?.absolutePath + "/"
-    private lateinit var fileName: String
-    private lateinit var newFileName: String
-    private lateinit var currentDate: Date
-    private lateinit var dateFormat: SimpleDateFormat
+    companion object {
+        // 音频反转
+        fun reverseAudio(originPath: String?, reversePath: String?) {
+            // 这里拼接要注意空格
+            val text = "ffmpeg -i $originPath -vf reverse -af areverse -preset superfast $reversePath"
+            val commands: Array<String> = text.split(" ").toTypedArray()
+            RxFFmpegInvoke.getInstance().runCommandRxJava(commands).subscribe(object : RxFFmpegSubscriber() {
+                override fun onFinish() {
 
-    // 开始录音
-    fun startRecord() {
+                }
 
-        // 以时间作为录音文件名
-        dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA)
-        currentDate = Calendar.getInstance().time
-        fileName = dateFormat.format(currentDate) + ".mp3"
-        recorder = MediaRecorder()
-        // 设置音频源为麦克风
-        recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-        // 设置媒体输出格式
-        recorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        // 设置媒体输出路径
-        recorder!!.setOutputFile(path + fileName)
-        // 设置媒体编码格式
-        recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-        try {
-            recorder!!.prepare()
-        } catch (e: IOException) {
-            e.printStackTrace()
+                override fun onProgress(progress: Int, progressTime: Long) {
+
+                }
+
+                override fun onCancel() {
+
+                }
+
+                override fun onError(message: String) {
+
+                }
+            })
         }
-        recorder!!.start()
-    }
-
-    // 停止录音
-    fun stopRecord() {
-
-        recorder!!.stop()
-        recorder!!.release()
-        recorder = null
-        // 生成倒放音频文件
-        // 为了区分源文件，添加_reverse后缀
-        newFileName = dateFormat.format(currentDate) + "_reverse.mp3"
-        reverseAudio(fileName, newFileName)
-    }
-
-    fun isPlaying() {
-        recorder
-    }
-
-    // 开始播放音频
-    fun startPlay() {
-
-        player = MediaPlayer()
-        try {
-            if (!player!!.isPlaying) {
-                player!!.setDataSource(path + newFileName)
-                player!!.prepare()
-                player!!.start()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    fun playOriginVoice() {
-        player = MediaPlayer()
-        try {
-            if (!player!!.isPlaying) {
-                player!!.setDataSource(path + fileName)
-                player!!.prepare()
-                player!!.start()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    fun playReverseVoice() {
-        player = MediaPlayer()
-        try {
-            if (!player!!.isPlaying) {
-                player!!.setDataSource(path + newFileName)
-                player!!.prepare()
-                player!!.start()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    // 停止播放
-    fun stopPlay() {
-        player?.stop()
-        player?.release()
-        player = null
-    }
-
-    // 释放资源，可在onStop()中调用
-    fun closeAll() {
-        if (recorder != null) {
-            recorder!!.release()
-            recorder = null
-        }
-        if (player != null) {
-            player!!.release()
-            player = null
-        }
-    }
-
-    // 音频反转
-    private fun reverseAudio(fileName: String?, newFileName: String?) {
-        // 这里拼接要注意空格
-        val text = "ffmpeg -i $path$fileName -vf reverse -af areverse -preset superfast $path$newFileName"
-        val commands: Array<String> = text.split(" ").toTypedArray()
-
-        RxFFmpegInvoke.getInstance().runCommandRxJava(commands).subscribe(object : RxFFmpegSubscriber() {
-            override fun onFinish() {
-
-            }
-
-            override fun onProgress(progress: Int, progressTime: Long) {
-
-            }
-
-            override fun onCancel() {
-
-            }
-
-            override fun onError(message: String) {
-
-            }
-        })
     }
 }

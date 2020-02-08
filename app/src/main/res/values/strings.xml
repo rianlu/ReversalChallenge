@@ -2,7 +2,7 @@
     <string name="app_name">倒放挑战</string>
     <string name="app_about">关于</string>
     <string name="dialog_cancel">取消</string>
-    <string name="dialog_ok">OK</string>
+    <string name="dialog_ok">好的</string>
     <string name="dialog_donate">捐赠</string>
     <string name="dialog_message" translatable="false">最近看了很多的倒放挑战，萌生了这个想法，祝你使用愉快。</string>
     <string name="image_hint_play_origin_voice">开始播放原音</string>

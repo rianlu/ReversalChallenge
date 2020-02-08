@@ -2,7 +2,6 @@ package com.wzl.reversalchallenge;
 
 import android.Manifest
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -17,11 +16,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.wzl.reversalchallenge.utils.CacheUtil
-import com.wzl.reversalchallenge.utils.MediaUtil
+import com.wzl.reversalchallenge.utils.MediaRecorderUtil
 
 public class MainActivity : AppCompatActivity() {
 
-    private var mediaUtil: MediaUtil? = null
     private val permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
     private val REQUEST_RECORD_AUDIO_PERMISSION  = 1
     private var adapter: MyFragmentPagerAdapter? = null
@@ -37,11 +35,6 @@ public class MainActivity : AppCompatActivity() {
         initView()
 
         checkPermissions()
-    }
-
-    protected override fun onStop() {
-        super.onStop()
-        mediaUtil!!.closeAll()
     }
 
     public override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -63,8 +56,6 @@ public class MainActivity : AppCompatActivity() {
 
     fun initView() {
 
-        mediaUtil = MediaUtil(this)
-
         viewPager = findViewById(R.id.viewPager)
         radioGroup = findViewById(R.id.radioGroup)
 
@@ -78,6 +69,12 @@ public class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewPager!!.removeOnPageChangeListener(mPageChangeListener)
+        val recordFragment = supportFragmentManager.findFragmentById(R.id.recordFragmnet) as RecordFragment
+        recordFragment.recorder.release()
+        recordFragment.mediaPlayer.release()
+        val repeatFragment = supportFragmentManager.findFragmentById(R.id.recordFragmnet) as RepeatFragment
+        repeatFragment.recorder.release()
+        repeatFragment.mediaPlayer.release()
     }
 
     private val mPageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener {

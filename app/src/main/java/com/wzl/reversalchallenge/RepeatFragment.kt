@@ -9,14 +9,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.wzl.reversalchallenge.databinding.FragmentRepeatBinding
-import com.wzl.reversalchallenge.utils.MediaUtil
+import com.wzl.reversalchallenge.utils.AudioRecordUtil
+import com.wzl.reversalchallenge.utils.IRecorder
+import com.wzl.reversalchallenge.utils.MediaPlayerUtil
+import com.wzl.reversalchallenge.utils.MediaRecorderUtil
 
 /**
  * A simple [Fragment] subclass.
  */
 class RepeatFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var mediaUtil: MediaUtil
+    public lateinit var recorder: IRecorder
+    public lateinit var mediaPlayer: MediaPlayerUtil
     private lateinit var binding: FragmentRepeatBinding
     private var isRecording: Boolean = false;
 
@@ -39,7 +43,8 @@ class RepeatFragment : Fragment(), View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mediaUtil = MediaUtil(requireActivity())
+        recorder = AudioRecordUtil(requireActivity())
+        mediaPlayer = MediaPlayerUtil()
         initView()
     }
 
@@ -48,43 +53,64 @@ class RepeatFragment : Fragment(), View.OnClickListener {
         when (v!!.id) {
             R.id.start_stop_record -> {
                 if (!isRecording) {
-                    Toast.makeText(requireActivity(), "开始录音", Toast.LENGTH_SHORT).show()
-                    mediaUtil.startRecord()
+                    Toast.makeText(requireActivity(), R.string.image_hint_start_record, Toast.LENGTH_SHORT).show()
+                    recorder.startRecord()
                     isRecording = true
                     binding.commonView.startStopRecord.background = resources.getDrawable(R.drawable.stop_record_icon, null)
                 } else {
-                    Toast.makeText(requireActivity(), "停止录音", Toast.LENGTH_SHORT).show()
-                    mediaUtil.stopRecord()
+                    Toast.makeText(requireActivity(), R.string.image_hint_stop_record, Toast.LENGTH_SHORT).show()
+                    recorder.stopRecord()
                     isRecording = false
                     binding.commonView.startStopRecord.background = resources.getDrawable(R.drawable.start_record_icon, null)
-                    binding.commonView.startStopRecord.visibility = View.GONE
-                    binding.commonView.playOriginVoice.visibility = View.VISIBLE
-                    binding.commonView.playReverseVoice.visibility = View.VISIBLE
-                    binding.commonView.backToRecord.visibility = View.VISIBLE
+                    showOrHideUI()
                 }
             }
             R.id.play_origin_voice -> {
-                Toast.makeText(requireActivity(), "开始播放原音", Toast.LENGTH_SHORT).show()
-                mediaUtil.playOriginVoice()
+                if (!mediaPlayer.checkPlaying()) {
+                    Toast.makeText(requireActivity(), R.string.image_hint_play_origin_voice, Toast.LENGTH_SHORT).show()
+                    mediaPlayer.playOrigin(recorder.getOriginPath())
+                }
             }
             R.id.play_reverse_voice -> {
-                Toast.makeText(requireActivity(), "开始播放", Toast.LENGTH_SHORT).show()
-                mediaUtil.playReverseVoice()
+                if (!mediaPlayer.checkPlaying()) {
+                    Toast.makeText(requireActivity(), R.string.image_hint_play_voice, Toast.LENGTH_SHORT).show()
+                    mediaPlayer.playReverse(recorder.getReversePath())
+                }
             }
             R.id.back_to_record -> {
-                binding.commonView.startStopRecord.visibility = View.VISIBLE
-                binding.commonView.playOriginVoice.visibility = View.GONE
-                binding.commonView.playReverseVoice.visibility = View.GONE
-                binding.commonView.backToRecord.visibility = View.GONE
+                showOrHideUI()
             }
         }
     }
 
-    fun initView() {
+    private fun initView() {
 
         binding.commonView.startStopRecord.setOnClickListener(this)
         binding.commonView.playOriginVoice.setOnClickListener(this)
         binding.commonView.playReverseVoice.setOnClickListener(this)
         binding.commonView.backToRecord.setOnClickListener(this)
+    }
+
+    private fun showOrHideUI() {
+        if (binding.commonView.startStopRecord.visibility == View.VISIBLE) {
+            binding.commonView.startStopRecord.visibility = View.GONE
+        } else {
+            binding.commonView.startStopRecord.visibility = View.VISIBLE
+        }
+        if (binding.commonView.playOriginVoice.visibility == View.VISIBLE) {
+            binding.commonView.playOriginVoice.visibility = View.GONE
+        } else {
+            binding.commonView.playOriginVoice.visibility = View.VISIBLE
+        }
+        if (binding.commonView.playReverseVoice.visibility == View.VISIBLE) {
+            binding.commonView.playReverseVoice.visibility = View.GONE
+        } else {
+            binding.commonView.playReverseVoice.visibility = View.VISIBLE
+        }
+        if (binding.commonView.backToRecord.visibility == View.VISIBLE) {
+            binding.commonView.backToRecord.visibility = View.GONE
+        } else {
+            binding.commonView.backToRecord.visibility = View.VISIBLE
+        }
     }
 }
