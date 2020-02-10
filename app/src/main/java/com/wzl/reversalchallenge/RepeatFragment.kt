@@ -9,10 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.wzl.reversalchallenge.databinding.FragmentRepeatBinding
-import com.wzl.reversalchallenge.utils.AudioRecordUtil
-import com.wzl.reversalchallenge.utils.IRecorder
-import com.wzl.reversalchallenge.utils.MediaPlayerUtil
-import com.wzl.reversalchallenge.utils.MediaRecorderUtil
+import com.wzl.reversalchallenge.utils.media.AudioRecordUtil
+import com.wzl.reversalchallenge.utils.media.IRecorder
+import com.wzl.reversalchallenge.utils.media.MediaPlayerUtil
 
 /**
  * A simple [Fragment] subclass.
@@ -79,6 +78,7 @@ class RepeatFragment : Fragment(), View.OnClickListener {
             }
             R.id.back_to_record -> {
                 showOrHideUI()
+                mediaPlayer.stopPlay()
             }
         }
     }

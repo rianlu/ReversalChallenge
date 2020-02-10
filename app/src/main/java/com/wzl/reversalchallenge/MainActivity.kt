@@ -15,8 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.wzl.reversalchallenge.utils.CacheUtil
-import com.wzl.reversalchallenge.utils.MediaRecorderUtil
+import com.wzl.reversalchallenge.utils.common.CacheUtil
 
 public class MainActivity : AppCompatActivity() {
 
@@ -69,12 +68,16 @@ public class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewPager!!.removeOnPageChangeListener(mPageChangeListener)
-        val recordFragment = supportFragmentManager.findFragmentById(R.id.recordFragmnet) as RecordFragment
-        recordFragment.recorder.release()
-        recordFragment.mediaPlayer.release()
-        val repeatFragment = supportFragmentManager.findFragmentById(R.id.recordFragmnet) as RepeatFragment
-        repeatFragment.recorder.release()
-        repeatFragment.mediaPlayer.release()
+        val recordFragment = supportFragmentManager.findFragmentById(R.id.recordFragmnet)
+        recordFragment?.apply {
+            (this as RecordFragment).recorder.release()
+            this.mediaPlayer.release()
+        }
+        val repeatFragment = supportFragmentManager.findFragmentById(R.id.recordFragmnet)
+        repeatFragment?.apply {
+            (this as RepeatFragment).recorder.release()
+            this.mediaPlayer.release()
+        }
     }
 
     private val mPageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener {
@@ -114,9 +117,8 @@ public class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.clear_cache -> {
                 val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
-                dialog.setTitle(R.string.app_about)
+                dialog.setTitle(R.string.app_dialog_hint)
                 dialog.setMessage("共有${CacheUtil.getExternalCacheSize(this)}缓存，是否清理？")
-                dialog.setNegativeButton(R.string.dialog_cancel, null)
                 dialog.setPositiveButton(R.string.dialog_ok, object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface?, which: Int) {
                         CacheUtil.clearExternalCache(this@MainActivity)
@@ -126,23 +128,12 @@ public class MainActivity : AppCompatActivity() {
             }
             R.id.app_about -> {
                 val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
-                dialog.setNeutralButton(R.string.dialog_donate, object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        Toast.makeText(this@MainActivity, "请看首页提示", Toast.LENGTH_SHORT).show()
-                        showHint()
-                    }
-
-                })
-                dialog.setTitle(R.string.app_about)
+                dialog.setTitle(R.string.app_dialog_about)
                 dialog.setMessage(R.string.dialog_message)
-                dialog.setPositiveButton(R.string.dialog_ok, null)
+                dialog.setPositiveButton(R.string.dialog_yes, null)
                 dialog.create().show()
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun showHint() {
-        RecordFragment.Companion.HintAsyncTask().execute()
     }
 }

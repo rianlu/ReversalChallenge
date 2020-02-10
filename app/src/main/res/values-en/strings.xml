@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Reversal Challenge</string>
-    <string name="app_about">About</string>
+    <string name="app_dialog_about">About</string>
     <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_donate">Donate</string>
     <string name="dialog_ok">OK</string>
     <string name="image_hint_play_origin_voice">Start Play Origin Voice</string>
     <string name="image_hint_play_voice">Start Play</string>
     <string name="image_hint_start_record">Start Record</string>
     <string name="image_hint_stop_record">Stop Record</string>
     <string name="image_hint_back">Back</string>
+    <string name="app_dialog_hint">Tip</string>
 </resources>
