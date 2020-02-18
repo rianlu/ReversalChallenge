@@ -54,7 +54,6 @@ class AudioRecordUtil(context: Context) : IRecorder {
         audioRecord = AudioRecord(AUDIO_INPUT, AUDIO_SAMPLE_RATE, AUDIO_CHANNEL, AUDIO_ENCODING, bufferSizeInBytes)
     }
 
-
     override fun startRecord() {
         val cacheFolder = File(path)
         if (!cacheFolder.exists()) {

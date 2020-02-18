@@ -6,7 +6,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "com.wzl.reversalchallenge"
+        applicationId "com.wzl.reversechallenge"
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 2

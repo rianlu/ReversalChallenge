@@ -53,7 +53,7 @@ public class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun initView() {
+    private fun initView() {
 
         viewPager = findViewById(R.id.viewPager)
         radioGroup = findViewById(R.id.radioGroup)
@@ -70,12 +70,12 @@ public class MainActivity : AppCompatActivity() {
         viewPager!!.removeOnPageChangeListener(mPageChangeListener)
         val recordFragment = supportFragmentManager.findFragmentById(R.id.recordFragmnet)
         recordFragment?.apply {
-            (this as RecordFragment).recorder.release()
+            (this as RecordFragment).recorder?.release()
             this.mediaPlayer.release()
         }
         val repeatFragment = supportFragmentManager.findFragmentById(R.id.recordFragmnet)
         repeatFragment?.apply {
-            (this as RepeatFragment).recorder.release()
+            (this as RepeatFragment).recorder?.release()
             this.mediaPlayer.release()
         }
     }

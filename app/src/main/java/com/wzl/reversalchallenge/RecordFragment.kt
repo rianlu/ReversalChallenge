@@ -18,7 +18,7 @@ import com.wzl.reversalchallenge.utils.media.MediaPlayerUtil
  */
 class RecordFragment : Fragment(), View.OnClickListener {
 
-    public lateinit var recorder: IRecorder
+    public var recorder: IRecorder? = null
     public lateinit var mediaPlayer: MediaPlayerUtil
     private var isRecording: Boolean = false
 
@@ -36,16 +36,12 @@ class RecordFragment : Fragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_record, container, false)
-
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_record, container, false)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        recorder = AudioRecordUtil(requireActivity())
         mediaPlayer = MediaPlayerUtil()
         initView()
     }
@@ -54,14 +50,17 @@ class RecordFragment : Fragment(), View.OnClickListener {
 
         when (v!!.id) {
             R.id.start_stop_record -> {
+                if (recorder == null) {
+                    recorder = AudioRecordUtil(requireActivity())
+                }
                 if (!isRecording) {
                     Toast.makeText(requireActivity(), R.string.image_hint_start_record, Toast.LENGTH_SHORT).show()
-                    recorder.startRecord()
+                    recorder!!.startRecord()
                     isRecording = true
                     binding.commonView.startStopRecord.background = resources.getDrawable(R.drawable.stop_record_icon, null)
                 } else {
                     Toast.makeText(requireActivity(), R.string.image_hint_stop_record, Toast.LENGTH_SHORT).show()
-                    recorder.stopRecord()
+                    recorder!!.stopRecord()
                     isRecording = false
                     binding.commonView.startStopRecord.background = resources.getDrawable(R.drawable.start_record_icon, null)
                     showOrHideUI()
@@ -70,13 +69,13 @@ class RecordFragment : Fragment(), View.OnClickListener {
             R.id.play_origin_voice -> {
                 if (!mediaPlayer.checkPlaying()) {
                     Toast.makeText(requireActivity(), R.string.image_hint_play_origin_voice, Toast.LENGTH_SHORT).show()
-                    mediaPlayer.playOrigin(recorder.getOriginPath())
+                    mediaPlayer.playOrigin(recorder!!.getOriginPath())
                 }
             }
             R.id.play_reverse_voice -> {
                 if (!mediaPlayer.checkPlaying()) {
                     Toast.makeText(requireActivity(), R.string.image_hint_play_voice, Toast.LENGTH_SHORT).show()
-                    mediaPlayer.playReverse(recorder.getReversePath())
+                    mediaPlayer.playReverse(recorder!!.getReversePath())
                 }
             }
             R.id.back_to_record -> {
